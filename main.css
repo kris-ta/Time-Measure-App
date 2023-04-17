@@ -1,0 +1,71 @@
+.form-preferences {
+  display: flex;
+  width: 40vh;
+  justify-content: center;
+  /* align-items: center; */
+  flex-wrap: wrap;
+  flex-direction: raw;
+}
+
+body {
+  background-color: #f1f1f1;
+}
+
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.form-preferences {
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.form-preferences label {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.form-preferences input[type="date"],
+.form-preferences select {
+  cursor: pointer;
+
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.form-preferences select {
+}
+
+.form-preferences select:hover {
+  border-color: #888;
+}
+
+.form-preferences button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #1c87c9;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.form-preferences button:hover {
+  background-color: #1569a3;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.result-container {
+  padding: 15px;
+  display: flex;
+  justify-content: space-around;
+}

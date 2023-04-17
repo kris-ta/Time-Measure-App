@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Time Measure App</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <div class="main-container">
+      <h1 class="heading">Time Measure App</h1>
+
+      <form class="form-preferences">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start-date" />
+
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="end-date" />
+
+        <label for="preset">Preset:</label>
+        <select id="preset" name="preset">
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+        </select>
+
+        <label for="options">Options:</label>
+        <select id="options" name="options">
+          <option value="all">All Days</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekends">Weekends</option>
+        </select>
+
+        <label for="units">Units:</label>
+        <select id="units" name="units">
+          <option value="Days">Days</option>
+          <option value="Hours">Hours</option>
+          <option value="Minutes">Minutes</option>
+          <option value="Seconds">Seconds</option>
+        </select>
+        <button type="button" class="calculate-button">calculate</button>
+        <div class="result-container">
+          <div>Result</div>
+          <div class="calculation-result"></div>
+        </div>
+      </form>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
