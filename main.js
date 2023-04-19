@@ -7,11 +7,55 @@ const unitsSelect = document.querySelector("#units");
 const calculateButton = document.querySelector(".calculate-button");
 const result = document.querySelector(".calculation-result");
 
-// startDateInput.addEventListener("change", handleStartDateChange);
-// endDateInput.addEventListener("change", handleEndDateChange);
+startDateInput.addEventListener("change", handleStartDateChange);
+endDateInput.addEventListener("change", handleEndDateChange);
 calculateButton.addEventListener("click", handleCalculate);
-
 presetSelect.addEventListener("change", handlePresetChange);
+
+displayHistoryTable();
+
+// Обмежуємо можливості вибору інпутів
+
+function handleStartDateChange() {
+  endDateInput.min = startDateInput.value;
+}
+function handleEndDateChange() {
+  startDateInput.max = endDateInput.value;
+}
+
+// Обробник події для кнопки
+
+function handleCalculate() {
+  const startDate = new Date(startDateInput.value);
+  const endDate = new Date(endDateInput.value);
+  const timeUnits = unitsSelect.value;
+  const daysOption = optionSelect.value;
+
+  // перевірка чи були введені дати та чи є вони коректні
+
+  // if (!startDateInput.value || !endDateInput.value) {
+  //   alert("Помилка: будь ласка, введіть обидві дати.");
+  //   return;
+  // }
+
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    alert("Помилка: Введіть коректні дати.");
+    return;
+  }
+
+  const timeDiff = calculateDateDifference(
+    startDate,
+    endDate,
+    timeUnits,
+    daysOption
+  );
+
+  result.textContent = timeDiff;
+
+  // Отримуємо останні 10 результатів з локального сховища
+  addToLocalStorageHistory(startDate, endDate, timeDiff);
+  displayHistoryTable();
+}
 
 // функція на зміну пресетів міс або тиждень
 
@@ -36,59 +80,51 @@ function handlePresetChange() {
   endDateInput.value = endDateString;
 }
 
-// коли користувач вибирає дату в одному з інпутів, перевіряю, чи була вибрана дата в обох інпутах, чи є друга дата не меншою за першу. Якщо друга дата менша за першу - помилка, забороняю розрахунок, поки не буде введена правильна дата.
+function addToLocalStorageHistory(startDate, endDate, timeDiff) {
+  let resultsHistory = JSON.parse(localStorage.getItem("results")) || [];
 
-function handleStartDateChange() {
-  const startDate = new Date(startDateInput.value);
-  if (endDate && startDate > endDate) {
-    alert("Помилка: друга дата повинна бути більшою або рівною першій даті.");
-    endDateInput.value = "";
-    endDate = null;
-  }
+  // Додаємо поточний результат до історії результатів
+  resultsHistory.unshift({
+    startDate: formatDate(startDate),
+    endDate: formatDate(endDate),
+    result: timeDiff,
+  });
+
+  // Обмежуємо кількість елементів до 10
+  resultsHistory = resultsHistory.slice(0, 10);
+
+  // Зберігаємо історію результатів в локальне сховище
+  localStorage.setItem("results", JSON.stringify(resultsHistory));
 }
 
-function handleEndDateChange() {
-  endDate = new Date(endDateInput.value);
-  if (startDate && startDate > endDate) {
-    alert("Помилка: друга дата повинна бути більшою або рівною першій даті.");
-    endDateInput.value = "";
-    endDate = null;
+// виведення 10 результатів в таблицю
+function displayHistoryTable() {
+  // Отримуємо останні 10 результатів з локального сховища
+  const resultsHistory = JSON.parse(localStorage.getItem("results")) || [];
+
+  // Отримуємо елемент таблиці з HTML
+  const tableBody = document.querySelector("#results-history tbody");
+
+  // Очищаємо таблицю перед додаванням нових даних
+  tableBody.innerHTML = "";
+
+  // Додаємо рядки таблиці з даними про кожен результат
+  for (let item of resultsHistory) {
+    const row = document.createElement("tr");
+    const startDateCell = document.createElement("td");
+    const endDateCell = document.createElement("td");
+    const resultCell = document.createElement("td");
+
+    startDateCell.textContent = item.startDate;
+    endDateCell.textContent = item.endDate;
+    resultCell.textContent = item.result;
+
+    row.appendChild(startDateCell);
+    row.appendChild(endDateCell);
+    row.appendChild(resultCell);
+
+    tableBody.appendChild(row);
   }
-}
-
-// Обробник події для кнопки
-
-function handleCalculate() {
-  const startDate = new Date(startDateInput.value);
-  const endDate = new Date(endDateInput.value);
-  const timeUnits = unitsSelect.value;
-  const daysOption = optionSelect.value;
-
-  // перевірка чи були введені дати та чи є вони коректні
-
-  if (!startDate || !endDate) {
-    alert("Помилка: будь ласка, введіть обидві дати.");
-    return;
-  }
-
-  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-    alert("Помилка: Введіть коректні дати.");
-    return;
-  }
-
-  if (startDate > endDate) {
-    alert("Помилка: друга дата повинна бути більшою або рівною першій даті.");
-    return;
-  }
-
-  const timeDiff = calculateDateDifference(
-    startDate,
-    endDate,
-    timeUnits,
-    daysOption
-  );
-
-  result.textContent = timeDiff;
 }
 
 function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
@@ -128,13 +164,13 @@ function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
 
   switch (timeUnits.toLowerCase()) {
     case "seconds":
-      return finalDiffInDays * 24 * 60 * 60;
+      return finalDiffInDays * 24 * 60 * 60 + " " + timeUnits;
     case "minutes":
-      return finalDiffInDays * 24 * 60;
+      return finalDiffInDays * 24 * 60 + " " + timeUnits;
     case "hours":
-      return finalDiffInDays * 24;
+      return finalDiffInDays * 24 + " " + timeUnits;
     default:
-      return finalDiffInDays;
+      return finalDiffInDays + " " + timeUnits;
   }
 }
 

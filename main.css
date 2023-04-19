@@ -10,7 +10,9 @@
 body {
   background-color: #f1f1f1;
 }
-
+form {
+  display: flex;
+}
 .main-container {
   display: flex;
   justify-content: center;
@@ -68,4 +70,38 @@ body {
   padding: 15px;
   display: flex;
   justify-content: space-around;
+  border: 1px solid #ccc;
+  border-radius: 52px;
+  margin: 29px 1px 2px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 800px;
+  margin: 15px;
+}
+
+th {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding: 8px;
+  border-radius: 75px;
+  background-color: rgb(238, 207, 212);
+}
+th:hover {
+  opacity: 0.8;
+  background-color: rgb(235, 187, 195);
+}
+
+td {
+  /* border: 1px solid #ddd; */
+  padding: 8px;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
