@@ -90,8 +90,12 @@ function addToLocalStorageHistory(startDate, endDate, timeDiff) {
     result: timeDiff,
   });
 
-  // Обмежуємо кількість елементів до 10
-  resultsHistory = resultsHistory.slice(0, 10);
+  if (resultsHistory.length >= 10) {
+    // Обмежуємо кількість елементів до 10
+    resultsHistory = resultsHistory.slice(0, 10);
+  } else {
+    return;
+  }
 
   // Зберігаємо історію результатів в локальне сховище
   localStorage.setItem("results", JSON.stringify(resultsHistory));
@@ -127,12 +131,14 @@ function displayHistoryTable() {
   }
 }
 
+const msInADay = 1000 * 60 * 60 * 24;
+
 function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
   //  різниця між двома датами в мілісекундах
   const diffInMs = Math.abs(endDate - startDate);
 
   //  кількість днів з цієї різниці
-  const totalDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  const totalDays = Math.floor(diffInMs / msInADay);
 
   // лічильники будніх та вихідних днів
   let weekdays = 0;
@@ -141,7 +147,7 @@ function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
   // проходжу по кожному дню між датами
   for (let i = 0; i < totalDays; i++) {
     // отримую поточну дату
-    const currentDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+    const currentDate = new Date(startDate.getTime() + i * msInADay);
 
     // перевіряю, чи є поточний день буднім або вихідним
 
@@ -164,13 +170,14 @@ function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
 
   switch (timeUnits.toLowerCase()) {
     case "seconds":
-      return finalDiffInDays * 24 * 60 * 60 + " " + timeUnits;
+      return `${finalDiffInDays * 24 * 60 * 60} ${timeUnits}`;
     case "minutes":
-      return finalDiffInDays * 24 * 60 + " " + timeUnits;
+      return `${finalDiffInDays * 24 * 60} ${timeUnits}`;
+
     case "hours":
-      return finalDiffInDays * 24 + " " + timeUnits;
+      return `${finalDiffInDays * 24} ${timeUnits}`;
     default:
-      return finalDiffInDays + " " + timeUnits;
+      return `${finalDiffInDays} ${timeUnits}`;
   }
 }
 
