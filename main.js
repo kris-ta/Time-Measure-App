@@ -15,7 +15,6 @@ presetSelect.addEventListener("change", handlePresetChange);
 displayHistoryTable();
 
 // Обмежуємо можливості вибору інпутів
-
 function handleStartDateChange() {
   endDateInput.min = startDateInput.value;
 }
@@ -24,7 +23,6 @@ function handleEndDateChange() {
 }
 
 // Обробник події для кнопки
-
 function handleCalculate() {
   const startDate = new Date(startDateInput.value);
   const endDate = new Date(endDateInput.value);
@@ -32,12 +30,6 @@ function handleCalculate() {
   const daysOption = optionSelect.value;
 
   // перевірка чи були введені дати та чи є вони коректні
-
-  // if (!startDateInput.value || !endDateInput.value) {
-  //   alert("Помилка: будь ласка, введіть обидві дати.");
-  //   return;
-  // }
-
   if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
     alert("Помилка: Введіть коректні дати.");
     return;
@@ -58,7 +50,6 @@ function handleCalculate() {
 }
 
 // функція на зміну пресетів міс або тиждень
-
 function handlePresetChange() {
   const selectedPreset = presetSelect.value;
 
@@ -78,6 +69,9 @@ function handlePresetChange() {
 
   startDateInput.value = startDateString;
   endDateInput.value = endDateString;
+
+  handleStartDateChange();
+  handleEndDateChange();
 }
 
 function addToLocalStorageHistory(startDate, endDate, timeDiff) {
@@ -133,16 +127,15 @@ function displayHistoryTable() {
 
 const msInADay = 1000 * 60 * 60 * 24;
 
-function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
-  //  різниця між двома датами в мілісекундах
+function countDays(startDate, endDate, daysOption) {
   const diffInMs = Math.abs(endDate - startDate);
-
-  //  кількість днів з цієї різниці
   const totalDays = Math.floor(diffInMs / msInADay);
 
-  // лічильники будніх та вихідних днів
-  let weekdays = 0;
-  let weekends = 0;
+  if (daysOption === "all") {
+    return totalDays;
+  }
+
+  let days = 0;
 
   // проходжу по кожному дню між датами
   for (let i = 0; i < totalDays; i++) {
@@ -150,30 +143,27 @@ function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
     const currentDate = new Date(startDate.getTime() + i * msInADay);
 
     // перевіряю, чи є поточний день буднім або вихідним
-
-    if (currentDate.getDay() === 0 || currentDate.getDay() === 6) {
-      weekends++;
-    } else {
-      weekdays++;
+    if (
+      (currentDate.getDay() === 0 || currentDate.getDay() === 6) &&
+      daysOption === "weekends"
+    ) {
+      days++;
+    } else if (daysOption === "weekdays") {
+      days++;
     }
   }
 
-  let finalDiffInDays;
+  return days;
+}
 
-  if (daysOption === "weekdays") {
-    finalDiffInDays = weekdays;
-  } else if (daysOption === "weekends") {
-    finalDiffInDays = weekends;
-  } else {
-    finalDiffInDays = totalDays;
-  }
+function calculateDateDifference(startDate, endDate, timeUnits, daysOption) {
+  const finalDiffInDays = countDays(startDate, endDate, daysOption);
 
   switch (timeUnits.toLowerCase()) {
     case "seconds":
       return `${finalDiffInDays * 24 * 60 * 60} ${timeUnits}`;
     case "minutes":
       return `${finalDiffInDays * 24 * 60} ${timeUnits}`;
-
     case "hours":
       return `${finalDiffInDays * 24} ${timeUnits}`;
     default:
