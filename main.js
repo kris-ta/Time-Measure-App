@@ -6,6 +6,7 @@ const optionSelect = document.querySelector("#options");
 const unitsSelect = document.querySelector("#units");
 const calculateButton = document.querySelector(".calculate-button");
 const result = document.querySelector(".calculation-result");
+const DAY_IN_MILLISECONDS = 1000 * 60 * 60 * 24;
 
 startDateInput.addEventListener("change", handleStartDateChange);
 endDateInput.addEventListener("change", handleEndDateChange);
@@ -125,11 +126,11 @@ function displayHistoryTable() {
   }
 }
 
-const msInADay = 1000 * 60 * 60 * 24;
 
 function countDays(startDate, endDate, daysOption) {
   const diffInMs = Math.abs(endDate - startDate);
-  const totalDays = Math.floor(diffInMs / msInADay);
+  const totalDays = Math.floor(diffInMs / DAY_IN_MILL
+ISECONDS);
 
   if (daysOption === "all") {
     return totalDays;
@@ -140,7 +141,8 @@ function countDays(startDate, endDate, daysOption) {
   // проходжу по кожному дню між датами
   for (let i = 0; i < totalDays; i++) {
     // отримую поточну дату
-    const currentDate = new Date(startDate.getTime() + i * msInADay);
+    const currentDate = new Date(startDate.getTime() + i * DAY_IN_MILL
+  ISECONDS);
 
     // перевіряю, чи є поточний день буднім або вихідним
     if (
